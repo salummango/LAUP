@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comments for Post - {{ post.title }}</title>
+</head>
+<body>
+    <h1>Comments for Post - {{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+    <hr>
+    <h2>Comments:</h2>
+    {% for comment in comments %}
+    <div>
+        <p>Author: {{ comment.author.username }}</p>
+        <p>{{ comment.content }}</p>
+        <hr>
+    </div>
+    {% empty %}
+    <p>No comments yet.</p>
+    {% endfor %}
+</body>
+</html>

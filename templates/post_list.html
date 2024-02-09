@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Post List</title>
+    <style>
+        #comment-textarea {
+            display: none; /* Hide textarea by default */
+        }
+    </style>
+</head>
+<body>
+    <h1>Post List</h1>
+    <ul>
+        {% for post in posts %}
+        <li>
+            <h2>{{ post.title }}</h2>
+            <p>Author: {{ post.author.username }}</p>
+            <p>{{ post.content }}</p>
+            <button class="comment-button" data-post-id="{{ post.id }}">Add Comment</button>
+            <textarea class="comment-textarea" data-post-id="{{ post.id }}" placeholder="Enter your comment"></textarea>
+            <button class="submit-comment" data-post-id="{{ post.id }}">Submit Comment</button>
+            <hr>
+        </li>
+        {% empty %}
+        <p>No posts available.</p>
+        {% endfor %}
+    </ul>
+    <script>
+        // Add event listeners to all comment buttons
+        const commentButtons = document.querySelectorAll(".comment-button");
+        commentButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const postId = button.getAttribute("data-post-id");
+                const textarea = document.querySelector(`.comment-textarea[data-post-id="${postId}"]`);
+                const content = textarea.value.trim(); // Get comment content
+                textarea.style.display = "block"; // Show the corresponding textarea
+            });
+        });
+
+        // Add event listeners to all submit comment buttons
+        const submitButtons = document.querySelectorAll(".submit-comment");
+        submitButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const postId = button.getAttribute("data-post-id");
+                const textarea = document.querySelector(`.comment-textarea[data-post-id="${postId}"]`);
+                const content = textarea.value.trim(); // Get comment content
+                if (content !== "") {
+                    // Send AJAX request to add comment
+                    fetch(`/alumn_club/add_comment/${postId}/`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": "{{ csrf_token }}",
+                        },
+                        body: JSON.stringify({ content }),
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Optionally handle success, e.g., show success message
+                            console.log("Comment added successfully.");
+                        } else {
+                            // Optionally handle error
+                            console.error("Failed to add comment.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
+                } else {
+                    // Optionally handle empty comment
+                    console.log("Comment cannot be empty.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

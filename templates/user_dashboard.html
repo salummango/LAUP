@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to Your Dashboard, {{ request.user.username }}</h1>
+    <h2>Notifications</h2>
+    <ul>
+        {% for notification in notifications %}
+        <li>{{ notification.message }} : <a href="{{ notification.link }}">view</a></li>
+        {% empty %}
+        <p>No notification available.</p>
+        {% endfor %}
+    </ul>
+    <h2>Club Memberships</h2>
+    <ul>
+        {% for membership in memberships %}
+        <li>{{ membership.club.name }}</li>
+        {% empty %}
+        <p>Your not a member in any club.</p>
+        {% endfor %}
+    </ul>
+    <h1>Club List</h1>
+    
+    <ul>
+        {% for club in clubss %}
+        <li>
+            <h2>{{ club.name }}</h2>
+            <p>{{ club.description }}</p>
+            <a href="{% url 'Alumni_clubs:view_club' club_id=club.id %}"><button>View Club</button></a>
+            <form action="{% url 'Alumni_clubs:join_club' club_id=club.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Join Club</button>
+            </form>
+            <hr>
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </li>
+        {% empty %}
+        <p>No clubs available.</p>
+        {% endfor %}
+    </ul>
+</body>
+</html>

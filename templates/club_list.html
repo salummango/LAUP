@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Club List</title>
+</head>
+<body>
+    <h1>Club List</h1>
+    <ul>
+        {% for club in clubs %}
+        <li>
+            <h2>{{ club.name }}</h2>
+            <p>{{ club.description }}</p>
+            <hr>
+        </li>
+        {% empty %}
+        <p>No clubs available.</p>
+        {% endfor %}
+    </ul>
+</body>
+</html>
